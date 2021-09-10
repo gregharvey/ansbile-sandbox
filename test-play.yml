@@ -1,0 +1,38 @@
+# For use with ce-dev: https://github.com/codeenigma/ce-dev
+- hosts: provision-target
+  become: true
+  vars:
+    - is_local: true
+    - _domain_name: provision-target
+    - deploy_user:
+        username: ce-dev
+    - project_name: ce-provision
+    - mysql_client:
+        host: provision-db
+        user: root
+        password: ce-dev
+    - _env_type: dev
+    - test_dict:
+        listA:
+          - a
+          - c
+        listB:
+          a:
+            - x
+            - y
+            - z
+          b:
+            - m
+            - n
+            - o
+          c:
+            - d
+            - e
+            - f
+
+  tasks:
+    - ansible.builtin.apt:
+        update_cache: yes
+    - ansible.builtin.import_role:
+        name: test_filters
+

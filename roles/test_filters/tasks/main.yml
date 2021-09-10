@@ -1,0 +1,61 @@
+---
+- name: Print the dict
+  debug:
+    msg: "{{ test_dict }}"
+
+- name: Printe listA
+  debug:
+    msg: "{{ test_dict.listA }}"
+
+- name: Print listB
+  debug:
+    msg: "{{ test_dict.listB }}"
+
+- name: listB through the list function
+  debug:
+    msg: "{{ test_dict.listB | list }}"
+
+- name: listB through the dict2items function
+  debug:
+    msg: "{{ test_dict.listB | dict2items }}"
+
+- name: Looping over listB with with_dict
+  debug:
+    msg: "{{ item }}"
+  with_dict: "{{ test_dict.listB }}"
+
+- name: Looping over listB with with_items
+  debug:
+    msg: "{{ item }}"
+  with_items: "{{ test_dict.listB }}"
+
+- name: Looping over listA with with_items
+  debug:
+    msg: "{{ item }}"
+  with_items: "{{ test_dict.listA }}"
+
+- name: Looping over listA to filter listB with map()
+  debug:
+    msg: "{{ test_dict.listB | map(attribute=item) }}"
+  with_items: "{{ test_dict.listA }}"
+
+- name: Looping over listA to filter listB with dict2items and map()
+  debug:
+    msg: "{{ test_dict.listB | dict2items | map(attribute='value') }}"
+  with_items: "{{ test_dict.listA }}"
+
+- name: Looping over listA to filter listB with dict2items, selectattr and map()
+  debug:
+    msg: "{{ test_dict.listB | dict2items | selectattr('key', 'match', item) | map(attribute='value') }}"
+  with_items: "{{ test_dict.listA }}"
+
+- set_fact:
+    test_list: []
+
+- name: Looping over listA to filter listB with dict2items, selectattr and map() and adding results to test_list
+  set_fact:
+    test_list: "{{ test_list + test_dict.listB | dict2items | selectattr('key', 'match', item) | map(attribute='value') }}"
+  with_items: "{{ test_dict.listA }}"
+
+- debug:
+    msg: "{{ test_list | flatten }}"
